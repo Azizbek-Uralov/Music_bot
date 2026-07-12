@@ -25,7 +25,7 @@ function downloadAudio(url, id) {
   });
 }
 
-ffunction downloadVideo(url, id) {
+function downloadVideo(url, id) {
   return new Promise((resolve, reject) => {
     const filePath = path.join(DOWNLOAD_DIR, `${id}.mp4`);
     const command = `yt-dlp --cookies "${cookiesPath}" --extractor-args "youtube:player_client=android" -f "best[ext=mp4][height<=480]" --max-filesize 45M -o "${filePath}" "${url}"`;
