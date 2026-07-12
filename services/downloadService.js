@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 const DOWNLOAD_DIR = path.join(__dirname, '..', 'downloads');
+const cookiesPath = path.join(__dirname, '..', 'cookies.txt');
 
 if (!fs.existsSync(DOWNLOAD_DIR)) {
   fs.mkdirSync(DOWNLOAD_DIR);
@@ -23,7 +24,7 @@ function downloadAudio(url, id) {
 function downloadVideo(url, id) {
   return new Promise((resolve, reject) => {
     const filePath = path.join(DOWNLOAD_DIR, `${id}.mp4`);
-    const command = `yt-dlp -f "best[ext=mp4][height<=720]" -o "${filePath}" "${url}"`;
+    const command = `yt-dlp -f "best[ext=mp4][height<=480]" --max-filesize 45M -o "${filePath}" "${url}"`;
 
     exec(command, (error) => {
       if (error) return reject(error);
@@ -35,7 +36,7 @@ function downloadVideo(url, id) {
 function downloadFromLink(url, id) {
   return new Promise((resolve, reject) => {
     const filePath = path.join(DOWNLOAD_DIR, `${id}.mp4`);
-    const command = `yt-dlp --cookies-from-browser firefox --socket-timeout 60 -f "bv*+ba/best" --merge-output-format mp4 -o "${filePath}" "${url}"`;
+    const command = `yt-dlp --cookies "${cookiesPath}" -N 8 --socket-timeout 60 -f "bv*[height<=480]+ba/best[height<=480]/best" --max-filesize 45M --merge-output-format mp4 -o "${filePath}" "${url}"`;
 
     exec(command, (error) => {
       if (error) return reject(error);
@@ -46,7 +47,8 @@ function downloadFromLink(url, id) {
 
 function getVideoInfo(url) {
   return new Promise((resolve, reject) => {
-    const command = `yt-dlp --cookies-from-browser firefox --skip-download --print "%(track)s|||%(artist)s|||%(title)s|||%(uploader)s" "${url}"`;
+    const cookiesPath = path.join(__dirname, '..', 'cookies.txt');
+    const command = `yt-dlp --cookies "${cookiesPath}" --skip-download --print "%(track)s|||%(artist)s|||%(title)s|||%(uploader)s" "${url}"`;
 
     exec(command, (error, stdout) => {
       if (error) return reject(error);
@@ -60,7 +62,6 @@ function getVideoInfo(url) {
       } else if (track) {
         query = track;
       } else if (title && !/^video by /i.test(title)) {
-        // Faqat generik "Video by ..." bo'lmasa, sarlavhani ishlatamiz
         query = title;
       }
 
