@@ -16,7 +16,7 @@ if (!fs.existsSync(DOWNLOAD_DIR)) {
 function downloadAudio(url, id) {
   return new Promise((resolve, reject) => {
     const filePath = path.join(DOWNLOAD_DIR, `${id}.mp3`);
-    const command = `yt-dlp --cookies "${cookiesPath}" -x --audio-format mp3 -o "${filePath}" "${url}"`;
+    const command = `yt-dlp --cookies "${cookiesPath}" --extractor-args "youtube:player_client=android" -x --audio-format mp3 -o "${filePath}" "${url}"`;
 
     exec(command, (error) => {
       if (error) return reject(error);
@@ -25,10 +25,10 @@ function downloadAudio(url, id) {
   });
 }
 
-function downloadVideo(url, id) {
+ffunction downloadVideo(url, id) {
   return new Promise((resolve, reject) => {
     const filePath = path.join(DOWNLOAD_DIR, `${id}.mp4`);
-    const command = `yt-dlp --cookies "${cookiesPath}" -f "best[ext=mp4][height<=480]" --max-filesize 45M -o "${filePath}" "${url}"`;
+    const command = `yt-dlp --cookies "${cookiesPath}" --extractor-args "youtube:player_client=android" -f "best[ext=mp4][height<=480]" --max-filesize 45M -o "${filePath}" "${url}"`;
 
     exec(command, (error) => {
       if (error) return reject(error);
