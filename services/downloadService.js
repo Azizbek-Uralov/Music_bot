@@ -1,9 +1,13 @@
 const { exec } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const cookiesPath = path.join(__dirname, '..', 'cookies.txt');
+
+if (process.env.COOKIES_CONTENT && !fs.existsSync(cookiesPath)) {
+  fs.writeFileSync(cookiesPath, process.env.COOKIES_CONTENT);
+}
 
 const DOWNLOAD_DIR = path.join(__dirname, '..', 'downloads');
-const cookiesPath = path.join(__dirname, '..', 'cookies.txt');
 
 if (!fs.existsSync(DOWNLOAD_DIR)) {
   fs.mkdirSync(DOWNLOAD_DIR);
